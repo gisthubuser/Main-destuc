@@ -124,3 +124,94 @@ end
 
 -- Sanity output to confirm load
 print("Script.lua loaded: commands count =", #commands)
+
+-- Safe sending helper:
+-- Uses pcall to guard remote calls and splits very long messages into multiple chunks so they
+-- don't exceed limits / appear on a single extremely-long line. Each chunk is sent with a
+-- short delay to avoid rate-limits. This does NOT automatically execute the commands list;
+-- call executeCommand(cmd) to send or wire it into your admin system.
+local function safeSendMessage(message, chunkSize, delay)
+    chunkSize = chunkSize or 140 -- max characters per chunk
+    delay = delay or 0.18 -- seconds between chunks
+    if type(message) ~= "string" then
+        return false, "message must be a string"
+    end
+    local len = #message
+    if len <= chunkSize then
+        local ok, err = pcall(function()
+            chatEvent:FireServer(message, "All")
+        end)
+        if not ok then
+            return false, err
+        end
+        return true
+    end
+
+    local i = 1
+    while i <= len do
+        local chunk = message:sub(i, math.min(i + chunkSize - 1, len))
+        local ok, err = pcall(function()
+            chatEvent:FireServer(chunk, "All")
+        end)
+        if not ok then
+            warn("safeSendMessage chunk failed:", err)
+            return false, err
+        end
+        i = i + chunkSize
+        task.wait(delay)
+    end
+    return true
+end
+
+-- Safe executor that wraps arbitrary command handling in pcall.
+-- By default it only prints the command. To actually send/execute commands, implement
+-- your executor logic and ensure proper permission checks.
+local function executeCommand(cmd)
+    local ok, err = pcall(function()
+        -- Example: send the command as a chat message (commented out for safety)
+        -- safeSendMessage(cmd)
+        -- For now we only log it to avoid accidental destructive actions
+        print("[executeCommand] ", cmd)
+    end)
+    if not ok then
+        warn("executeCommand error:", err)
+    end
+end
+
+-- Utility: find long commands and print them (you can adapt to store or to write to file)
+local function reportLongCommands(threshold)
+    threshold = threshold or 140
+    local longCommands = {}
+    for i, v in ipairs(commands) do
+        if type(v) == "string" and #v > threshold then
+            table.insert(longCommands, { index = i, length = #v, value = v })
+        end
+    end
+    if #longCommands > 0 then
+        print("Found long command strings (>" .. threshold .. " chars):")
+        for _, info in ipairs(longCommands) do
+            print(string.format("index=%d length=%d", info.index, info.length))
+            -- Print content in wrapped form so it's readable in the console
+            local s = info.value
+            local chunk = 140
+            for i = 1, #s, chunk do
+                print(s:sub(i, math.min(i+chunk-1, #s)))
+            end
+        end
+    else
+        print("No overly long command strings found (threshold =" .. threshold .. ")")
+    end
+    return longCommands
+end
+
+-- Expose helpers for runtime use (attach to script environment if needed)
+_G.KaholSafe = {
+    safeSendMessage = safeSendMessage,
+    executeCommand = executeCommand,
+    reportLongCommands = reportLongCommands,
+}
+
+-- Don't auto-run destructive commands. Instead, run reportLongCommands() or call exec manually.
+-- Example usage (uncomment to test in a safe environment):
+-- reportLongCommands(120)
+-- executeCommand(commands[1])
