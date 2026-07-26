@@ -1,4 +1,4 @@
-# Kohl-admin-house-destuctor 2
+ Kohl-admin-house-destuctor 2
 local chatEvent = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
 local runService = game:GetService("RunService")
 local players = game:GetService("Players")
