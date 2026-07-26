@@ -1,10 +1,9 @@
     -- Kohl-admin-house-destuctor 2 (fixed for modern TextChatService)
--- Sends commands to chat + while true + Heartbeat
-
-local TextChatService = game:GetService("TextChatService")
+local chatEvent = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
 local runService = game:GetService("RunService")
 local players = game:GetService("Players")
 local player = players.LocalPlayer
+local textChatService = game:GetService("TextChatService")
 
 local commands = {
     "/infect all", "/setmessage LOLLL NOOB", "/respawn all", "/brightness 10000000000",
@@ -24,7 +23,7 @@ local commands = {
     "/permban others", "/ban others", "/superfling all", "/removejoints all",
     "/cleardebris", "/deleteterrain", "/lag all",
 
-    "/watch others", "/view others", "/unview all", "/fixcamera all", 
+    "/watch others", "/view others", "/unview all", "/fixcamera all",
     "/freezecamera all", "/thawcamera all", "/glitchcamera all", "/attachcamera all",
     "/firstperson all", "/thirdperson all", "/maxfov all", "/minfov all",
     "/fov all 120", "/fov all 1", "/camerapart all", "/lockcamera all",
@@ -33,16 +32,16 @@ local commands = {
 
     "/unanchor admin pad", "/explode admin pad", "/punish admin pad",
 
-    "/m ⚠️ SYSTEM ALERT: injector message (truncated)",
-    "/m ⚠️ HARDWARE INFRASTRUCTURE FAILURE DETECTED (truncated)",
-    "/m ⚠️ UNRECOVERABLE DESYNC AND ENGINE CORRUPTION DETECTED (truncated)",
-    "/m ⚠️ BOOM CRASH APOCALYPSE ACTIVATED (truncated)",
+    "/m SYSTEM ALERT",
+    "/m HARDWARE FAILURE",
+    "/m DESYNC DETECTED",
+    "/m APOCALYPSE ACTIVATED",
 
-    "/h ==================================================================",
-    "/h [!] ERROR LOG: MAXIMUM REPLICATED STORAGE QUEUE EXCEEDED (truncated)",
-    "/h [!] LIGHTING SERVICE OVERRIDE APPLIED (truncated)",
-    "/h [!] NETWORK ENGINE HIGH INCOMING STREAMS (truncated)",
-    "/h ==================================================================",
+    "/h ================================",
+    "/h ERROR LOG",
+    "/h LIGHTING OVERRIDE",
+    "/h NETWORK OVERLOAD",
+    "/h ================================",
 
     "/paint all neon", "/paint all lime green", "/paint all really red", "/paint all electric blue",
     "/material all neon", "/material all glass", "/material all forcefield", "/material all foil",
@@ -80,7 +79,7 @@ local commands = {
     "/name others DESTROYED", "/name all TARGET", "/name admin pad BROKEN",
     "/confuse all", "/unconfuse all", "/blur all", "/unblur all",
     "/screencolor all red", "/screencolor all black", "/screencolor all green", "/screencolor all normal",
-    "/invert all", "/uninvert all", "/clone admin pad", "/clone admin pad",
+    "/invert all", "/uninvert all", "/clone admin pad",
     "/swagify all", "/swagify others", "/sparkles admin pad", "/fire admin pad",
     "/gold all", "/silver all", "/diamond all", "/bronze all",
     "/ice all", "/wood all", "/brick all", "/sand all",
@@ -105,46 +104,45 @@ local commands = {
     "/unpig all", "/uncow all", "/unhorse all", "/unsheep all"
 }
 
-print("Script loaded | Commands:", #commands)
+print("Loaded commands:", #commands)
 
--- Modern way to send chat messages (fixes the "Expected 'the' when parsing /" error)
-local function sendToChat(message)
-    local success, err = pcall(function()
-        local channel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
+-- Send function (tries new chat first, falls back to old)
+local function sendToChat(msg)
+    local success = pcall(function()
+        local channel = textChatService.TextChannels:FindFirstChild("RBXGeneral")
         if channel then
-            channel:SendAsync(message)
+            channel:SendAsync(msg)
         else
-            -- Fallback for older games
-            local chatEvent = game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
-            if chatEvent then
-                chatEvent:WaitForChild("SayMessageRequest"):FireServer(message, "All")
-            end
+            chatEvent:FireServer(msg, "All")
         end
     end)
     if not success then
-        warn("Failed to send:", message, err)
+        -- last resort
+        pcall(function()
+            chatEvent:FireServer(msg, "All")
+        end)
     end
 end
 
--- Main loop
+-- Main loop with while true + Heartbeat
 task.spawn(function()
-    local index = 1
+    local i = 1
     while true do
         runService.Heartbeat:Wait()
 
-        local cmd = commands[index]
+        local cmd = commands[i]
         if cmd then
             sendToChat(cmd)
-            print("Sent:", cmd)
+            print("Sent →", cmd)
         end
 
-        index = index + 1
-        if index > #commands then
-            index = 1
+        i = i + 1
+        if i > #commands then
+            i = 1
         end
 
-        task.wait(0.05) -- adjust speed here (lower = faster)
+        task.wait(0.05) -- change this number to make it faster/slower
     end
 end)
 
-print("Loop started (while true + Heartbeat)")
+print("Loop started")
