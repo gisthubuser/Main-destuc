@@ -1,5 +1,7 @@
 -- Kohl-admin-house-destuctor 2
 -- Fixed syntax, closed all strings in commands table, added minimal safety guards and a sanity print.
+-- Now auto-sends commands in chat with while true + Heartbeat
+
 local chatEvent = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
 local runService = game:GetService("RunService")
 local players = game:GetService("Players")
@@ -116,24 +118,18 @@ local commands = {
 
 -- Minimal runtime safety checks
 if runService:IsServer() then
-    -- LocalPlayer is not available on server; ensure code that depends on player checks for nil
     if not player then
-        player = nil -- explicit, avoid accidental indexing
+        player = nil
     end
 end
 
--- Sanity output to confirm load
 print("Script.lua loaded: commands count =", #commands)
 
--- Safe sending helper:
--- Uses pcall to guard remote calls and splits very long messages into multiple chunks so they
--- don't exceed limits / appear on a single extremely-long line. Each chunk is sent with a
--- short delay to avoid rate-limits. This does NOT automatically execute the commands list;
--- call executeCommand(cmd) to send or wire it into your admin system.
+-- Safe sending helper
 local function safeSendMessage(message, chunkSize, delay)
-    chunkSize = chunkSize or 140 -- max characters per chunk
-    delay = delay or 0.18 -- seconds between chunks
-    if type(message) ~= "string" then
+    chunkSize = chunkSize or 140
+    delay = delay or 0.18
+    if type(message) \~= "string" then
         return false, "message must be a string"
     end
     local len = #message
@@ -163,55 +159,38 @@ local function safeSendMessage(message, chunkSize, delay)
     return true
 end
 
--- Safe executor that wraps arbitrary command handling in pcall.
--- By default it only prints the command. To actually send/execute commands, implement
--- your executor logic and ensure proper permission checks.
+-- Now actually sends the command to chat
 local function executeCommand(cmd)
     local ok, err = pcall(function()
-        -- Example: send the command as a chat message (commented out for safety)
-        -- safeSendMessage(cmd)
-        -- For now we only log it to avoid accidental destructive actions
-        print("[executeCommand] ", cmd)
+        safeSendMessage(cmd)
+        print("[executeCommand] sent:", cmd)
     end)
     if not ok then
         warn("executeCommand error:", err)
     end
 end
 
--- Utility: find long commands and print them (you can adapt to store or to write to file)
-local function reportLongCommands(threshold)
-    threshold = threshold or 140
-    local longCommands = {}
-    for i, v in ipairs(commands) do
-        if type(v) == "string" and #v > threshold then
-            table.insert(longCommands, { index = i, length = #v, value = v })
-        end
-    end
-    if #longCommands > 0 then
-        print("Found long command strings (>" .. threshold .. " chars):")
-        for _, info in ipairs(longCommands) do
-            print(string.format("index=%d length=%d", info.index, info.length))
-            -- Print content in wrapped form so it's readable in the console
-            local s = info.value
-            local chunk = 140
-            for i = 1, #s, chunk do
-                print(s:sub(i, math.min(i+chunk-1, #s)))
-            end
-        end
-    else
-        print("No overly long command strings found (threshold =" .. threshold .. ")")
-    end
-    return longCommands
-end
+-- Main loop: while true do + Heartbeat pacing
+task.spawn(function()
+    local index = 1
+    while true do
+        -- Wait for next Heartbeat (smooth, non-blocking pacing)
+        runService.Heartbeat:Wait()
 
--- Expose helpers for runtime use (attach to script environment if needed)
-_G.KaholSafe = {
-    safeSendMessage = safeSendMessage,
-    executeCommand = executeCommand,
-    reportLongCommands = reportLongCommands,
-}
+        local cmd = commands[index]
+        if cmd then
+            executeCommand(cmd)
+        end
 
--- Don't auto-run destructive commands. Instead, run reportLongCommands() or call exec manually.
--- Example usage (uncomment to test in a safe environment):
--- reportLongCommands(120)
--- executeCommand(commands[1])
+        index = index + 1
+        if index > #commands then
+            index = 1 -- loop back to start
+        end
+
+        -- Extra small delay so it doesn't send every single frame (adjust as needed)
+        task.wait(0.15)
+    end
+end)
+
+print("Auto command loop started (while true + Heartbeat)")
+            
