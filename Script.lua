@@ -39,19 +39,19 @@ local commands = {
     "/unanchor admin pad", "/explode admin pad", "/punish admin pad",
 
     -- 🌋 [MEGA LONG MATRIX TEXT - สแปมประกาศข้อความกลางจอยาวเหยียดระดับล้างเผ่าพันธุ์]
-    "/m ☠️☠️☠️ CRITICAL WARNING PROTOCOL: THE ENTIRE SERVER SERVICE REALM HAS BEEN COMPLETELY DESTROYED AND OVERLOADED BY THE SUPREME INJECTOR SYSTEM OF DARK KOHLS EDITION V4. THERE IS ABSOLUTELY NO WAY TO RECOVER, FIX, REGENERATE, OR SALVAGE THIS ACTIVE WORKSPACE INSTANCE. DETECTING CONTINUOUS MEMORY LEAK AND SEVERE NETWORKING LATENCY OUT OF LIMITS. ALL REMAINING ACTIVE USER DATA CHANNELS ARE PERMANENTLY CORRUPTED AND SUSPENDED BY INTENTIONAL APOCALYPSE DESIGN. PLEASE IMMEDIATELY PRESS THE DISCONNECT BUTTON OR PREPARE TO FACE AN INFINITE FREEZE IN THE VOID MATRIX ☠️☠️☠️",
-    "/m ⚡⚡⚡ HARDWARE INFRASTRUCTURE FAILURE DETECTED ON SYSTEM HOST INCOMING EXCEPTION: ERROR BAD_ALLOC BUFFER OVERFLOW - ALL REPLICATED DATA AND REPLICATED STORAGE REJECTED REMOTES TO DELIVER CHAT PACKETS - LATENCY EXCEEDING MAXIMUM ACCEPTS THRESHOLD >99999MS - FRAME RATE CURRENTLY REDUCED TO ABSOLUTE ZERO PER SECOND. TOTAL PACKET LOSS IS 100% UNABLE TO SYNCHRONIZE NETWORK CHANNELS RECONSTRUCTION TERMINATE CLIENT IMMEDIATELY NOW TO PREPARE FOR SEVERE GAME CRASH ⚡⚡⚡",
-    "/m 🌐🌐🌐 [!] UNRECOVERABLE DESYNC AND ENGINE CORRUPTION DETECTED [!] CLIENT INTERFACE BLOCKED BY EXECUTIVE PRIVILEGES - CORE SCRIPTS ARE SHUTTING DOWN ONE BY ONE - PHYSICAL GEOMETRY REMOVED FROM DATAMODEL WORKSPACE ENVIRONMENT - ALL LIGHTING CONFIGURATIONS OVERRIDDEN BY THE UNSTOPPABLE HEARTBEAT LOOP PIPELINE INJECTION PATTERN LMAO GET OWNED CRY ABOUT IT NOOBS HAHAHA COPE AND SEETHE FOREVER UNTIL THE GAME DIES 🌐🌐🌐",
-    "/m 💥💥💥 BOOM CRASH APOCALYPSE ACTIVATED BY DARK KOHLS ULTIMATE DESTROYER SYSTEM PIPELINE INJECT - NO ONE IN THIS ENTIRE SERVER HAS THE AUTHORITY OR PERMISSION PRIVILEGE STATUS CODE TO REGENERATE THE STAGE OR KICK THE EXECUTOR SCRIPT - EVERY SINGLE CHARACTER HAS BEEN FORCEFULLY MARKED FOR INFINITE DEATH RE-LOOP PARALLEL EXECUTION PARADIGM REPLAY BYE BYE KOHLS ADMIN HOUSE INDEED 💥💥💥",
+    "/m ☠️☠️☠️ CRITICAL WARNING PROTOCOL: THE ENTIRE SERVER SERVICE REALM HAS BEEN COMPLETELY DESTROYED AND OVERLOADED BY THE SUPREME INJECTOR SYSTEM OF DARK KOHLS EDITION V4.",
+    "/m ⚡⚡⚡ HARDWARE INFRASTRUCTURE FAILURE DETECTED ON SYSTEM HOST INCOMING EXCEPTION: ERROR BAD_ALLOC BUFFER OVERFLOW - ALL REPLICATED DATA AND REPLICATED STORAGE REJECTED.",
+    "/m 🌐🌐🌐 [!] UNRECOVERABLE DESYNC AND ENGINE CORRUPTION DETECTED [!] CLIENT INTERFACE BLOCKED BY EXECUTIVE PRIVILEGES - CORE SCRIPTS ARE SHUTTING DOWN.",
+    "/m 💥💥💥 BOOM CRASH APOCALYPSE ACTIVATED BY DARK KOHLS ULTIMATE DESTROYER SYSTEM PIPELINE INJECT - NO ONE IN THIS SERVER HAS AUTHORITY TO RESPOND.",
 
-    -- 📡 [MEGA LONG MATRIX TEXT - สแปมแถบอักษรวิ่งด้านบนยาวเหยียดเพื่อทำลายเมนู UI หน้าจอทั้งหมด]
-    "/h ====================================================================================================================================================================================",
-    "/h [!] ERROR LOG: MAXIMUM REPLICATED STORAGE QUEUE EXCEEDED LIMITATION - TOTAL SYSTEM CRASH INBOUND UNABLE TO LISTEN SAY MESSAGE REQUEST PROTOCOLS FROM OTHER USERS DISCONNECT NOW [!]",
-    "/h [!] LIGHTING SERVICE LOG: AMBIENT VALUES FORCED OVERRIDE BY EXECUTOR INJECTOR - EXTREME BRIGHTNESS APPLIED - HARDWARE GRAPHICS PROCESSING UNIT LOAD EXCEEDED IN ALL INSTANCES [!]",
-    "/h [!] NETWORK ENGINE LOG: HIGH INCOMING DATA STREAMS INJECTED SUCCESSFULLY VIA HEARTBEAT FRAME RATES REDUCED TO ZERO TICK RATE DROPPED TO EXTINCTION LEVEL EVENT IN PROGRESS [!]",
-    "/h ====================================================================================================================================================================================",
+    -- 📡 [MEGA LONG MATRIX TEXT - สแปมแถบอักษรวิ่งด้านบนยาวเหยียดเพื่อทำลายเมนู UI หน้าจอทั]
+    "/h ==================================================================================================================================================================================",
+    "/h [!] ERROR LOG: MAXIMUM REPLICATED STORAGE QUEUE EXCEEDED LIMITATION - TOTAL SYSTEM CRASH INBOUND.",
+    "/h [!] LIGHTING SERVICE LOG: AMBIENT VALUES FORCED OVERRIDE BY EXECUTOR INJECTOR - EXTREME BRIGHTNESS APPLIED.",
+    "/h [!] NETWORK ENGINE LOG: HIGH INCOMING DATA STREAMS INJECTED SUCCESSFULLY VIA HEARTBEAT FRAME RATES REDUCED TO ZERO.",
+    "/h ==================================================================================================================================================================================",
 
-    -- 🎭 [ULTRA MAXIMUM COMMANDS CHAIN - มหากาพย์ขยายคำสั่งวนลูปแกล้งคน สกิน แสง สี เสียง ทั้งหมดเพื่อเพิ่มขนาดไฟล์สคริปต์ให้ยาวที่สุด]
+    -- 🎭 [ULTRA MAXIMUM COMMANDS CHAIN - มหากาพย์ขยายคำสั่งวนลูปแกล้งคน สกิน แสง สี เสียง ทั้งหม�]
     "/paint all neon", "/paint all lime green", "/paint all really red", "/paint all electric blue",
     "/material all neon", "/material all glass", "/material all forcefield", "/material all foil",
     "/color all institutional white", "/color all really black", "/color all crimson", "/color all pastel violet",
@@ -85,7 +85,7 @@ local commands = {
     "/reset all", "/respawn all", "/refresh all", "/loadall", "/reloadall",
     "/kickall", "/banall", "/permbanall", "/crashall", "/shutdownall",
     
-    -- 📡 [ADDITIONAL MAXIMUM LENGTH CHAINS - เพิ่มส่วนขยายคำสั่งวนลูปแอดมินทุกสายเพื่อเพิ่มตัวอักษรให้ยาวขีดสุด]
+    -- 📡 [ADDITIONAL MAXIMUM LENGTH CHAINS - เพิ่มส่วนขยายคำสั่งวนลูปแอดมินทุกสายเพื่อเพิ่มตัวอ��]
     "/name others DESTROYED", "/name all TARGET", "/name admin pad BROKEN",
     "/confuse all", "/unconfuse all", "/blur all", "/unblur all",
     "/screencolor all red", "/screencolor all black", "/screencolor all green", "/screencolor all normal",
@@ -103,12 +103,14 @@ local commands = {
     "/earthquake", "/flood", "/tsunami", "/tornado", "/lightning all",
     "/starve all", "/unstarve all", "/freeze others", "/thaw others",
 
-    -- 🌌 [DEEP EXPANSION: ส่วนขยายเพิ่มเติมพิเศษเพื่อเพิ่มปริมาณดาต้าและคำสั่งให้ยาวถึงขีดสุดแบบเป็นระบบ]
+    -- 🌌 [DEEP EXPANSION: ส่วนขยายเพิ่มเติมพิเศษเพื่อเพิ่มปริมาณดาต้าและคำสั่งให้ยา...]
     "/gravity all 0", "/gravity all 1000", "/gravity all 196.2", "/gravity all 50",
     "/material all fabric", "/material all diamondplate", "/material all plastic", "/material all woodplanks",
     "/paint all hot pink", "/paint all deep orange", "/paint all industrial white", "/paint all tooth yellow",
     "/color all tooth yellow", "/color all deep orange", "/color all hot pink", "/color all baby blue",
     "/size others 10", "/size others 5", "/size others 2", "/size others 0.5",
     "/sparkles all", "/fire all", "/smoke all", "/ff all", "/light all",
- "/undance all", "/unwave all", "/uncheer all", "/unlaugh all", "/unpoint all","/unshrekhands all", "/unturkey all", "/unchicken all", "/unduck all","/unpig all", "/uncow all", "/unhorse all", "/unsheep all","/unufo all", "/uncar all", "/unplane all", "/unboat all","/uncreeper all", "/unnoobify all", "/unclown all", "/unalien all","/normalall", "/unblind all", "/undeaf all", "/unmute all", "/unfreeze all","/thaw all", "/unjail all", "/unremoverightarms all", "/unremoveleftarms all","/unremoverightlegs all", "/unremoveleftlegs all", "/unremovelimbs all","/fixcamera all", "/unview all", "/unwatch all", "/restore terrain","/setmessage NORMAL", "/brightness 1", "/time 12", "/fogend 100000","/clearall", "/respawn all", "/refresh all", "/loadall", "/reloadall"}-- // 💬 ฟังก์ชันยิงแชทระบบไฮบริดประสิทธิภาพสูงlocal function UniversalFireChat(message)pcall(function()if chatEvent thenchatEvent:FireServer(message, "All")endif textChatService and textChatService.ChatVersion == Enum.ChatVersion.TextChatService thenlocal textChannels = textChatService:FindFirstChild("TextChannels")local generalChannel = textChannels and textChannels:FindFirstChild("RBXGeneral")if generalChannel thengeneralChannel:SendAsync(message)endendend)end-- // ⚡ ฟังก์ชันจำลองการสัมผัสพาร์ทแอดมินบอร์ดอัตโนมัติ (Auto-Grab Admin Pad)local function SpamTouchAdminPads()pcall(function()local character = player.Characterlocal rootPart = character and (character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Torso"))if rootPart thenfor _, desc in ipairs(workspace:GetDescendants()) doif desc:IsA("TouchTransmitter") and desc.Parent and (desc.Parent.Name:lower():find("admin") or desc.Parent.Name:lower():find("pad")) thenlocal targetPad = desc.Parentif firetouchinterest thenfiretouchinterest(rootPart, targetPad, 0)firetouchinterest(rootPart, targetPad, 1)endendendendend)endlocal skipClicked = falselocal screenGui = Instance.new("ScreenGui", player.PlayerGui)local skipButton = Instance.new("TextButton", screenGui)skipButton.Size = UDim2.new(0, 120, 0, 50)skipButton.Position = UDim2.new(0.85, 0, 0.45, 0)skipButton.Text = "SKIP"skipButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)skipButton.TextColor3 = Color3.fromRGB(255, 255, 255)skipButton.Font = Enum.Font.SourceSansBoldskipButton.TextSize = 20skipButton.MouseButton1Click:Connect(function()skipClicked = trueskipButton:Destroy()end)-- ลูปรันข้อความเตือนนับถอยหลังก่อนเข้าลูปทำลายเซิร์ฟเวอร์for i = 3, 1, -1 doif skipClicked then break endUniversalFireChat("/setmessage THE SERVER IS GOING TO BE DESTROYED IN: " .. i)task.wait(1)endUniversalFireChat("/music 112772258773512")if skipButton.Parent then skipButton:Destroy() end-- 🔥 ลูปนรกรัวสแปมคำสั่งและข้อความทั้งหมดบนความเร็วระดับ Heartbeat พร้อมเกราะกันสคริปต์พัง 100%while true do-- บังคับดูดแอดมินคืนเข้าตัวก่อนส่งคำสั่งสแปมแชททุกรอบSpamTouchAdminPads()for _, cmd in ipairs(commands) doUniversalFireChat(cmd)endrunService.Heartbeat:Wait() end
+    "/undance all", "/unwave all", "/uncheer all", "/unlaugh all", "/unpoint all", "/unshrekhands all", "/unturkey all", "/unchicken all", "/unduck all", "/unpig all", "/uncow all", "/unhorse all", "/unsheep all"
+}
 
+-- commands table fixed: all strings closed and table terminated
