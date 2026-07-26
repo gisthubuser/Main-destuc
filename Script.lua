@@ -188,7 +188,7 @@ task.spawn(function()
         end
 
         -- Extra small delay so it doesn't send every single frame (adjust as needed)
-        task.wait(0.15)
+        task.wait(0.05)
     end
 end)
 
