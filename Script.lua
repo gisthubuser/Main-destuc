@@ -104,6 +104,10 @@ local commands = {
     "/unpig all", "/uncow all", "/unhorse all", "/unsheep all"
 }
 
+-- Safety/config
+local sendInterval = 1 -- seconds between commands (configurable)
+local maxPerMinute = 60 -- max messages per 60s window to avoid extreme spam
+
 local isRunning = false
 local currentIndex = 1
 
@@ -111,26 +115,53 @@ print("Loaded commands:", #commands)
 
 -- Send function (tries new chat first, falls back to old)
 local function sendToChat(msg)
-    local success = pcall(function()
-        local channel = textChatService.TextChannels:FindFirstChild("RBXGeneral")
-        if channel then
-            channel:SendAsync(msg)
+    if not msg or msg == "" then return false end
+
+    -- rate limiting
+    if not sendToChat._rate then
+        sendToChat._rate = {count = 0, windowStart = tick()}
+    end
+    local rate = sendToChat._rate
+    local now = tick()
+    if now - rate.windowStart >= 60 then
+        rate.count = 0
+        rate.windowStart = now
+    end
+    if rate.count >= maxPerMinute then
+        -- throttled
+        warn("Throttling chat sends — reached maxPerMinute")
+        return false
+    end
+
+    local success, err = pcall(function()
+        if textChatService and textChatService.TextChannels then
+            local channel = textChatService.TextChannels:FindFirstChild("RBXGeneral")
+            if channel and channel.SendAsync then
+                channel:SendAsync(msg)
+            else
+                chatEvent:FireServer(msg, "All")
+            end
         else
             chatEvent:FireServer(msg, "All")
         end
     end)
-    if not success then
-        -- last resort
-        pcall(function()
-            chatEvent:FireServer(msg, "All")
-        end)
+
+    if success then
+        rate.count = rate.count + 1
+        return true
+    else
+        warn("Failed to send chat:", err)
+        -- fallback attempt
+        pcall(function() chatEvent:FireServer(msg, "All") end)
+        return false
     end
 end
 
 -- Chat command handler
 local function onChatted(msg)
+    if type(msg) ~= "string" then return end
     local lowerMsg = msg:lower()
-    
+
     if lowerMsg == "/start" then
         isRunning = true
         currentIndex = 1
@@ -140,25 +171,46 @@ local function onChatted(msg)
         isRunning = false
         print("Spam stopped!")
         sendToChat("/m Spam deactivated")
-    elseif lowerMsg:sub(1, 7) == "/send " then
-        local customMsg = msg:sub(8)
+    elseif lowerMsg:sub(1, 6) == "/send " then
+        local customMsg = msg:sub(7)
         sendToChat(customMsg)
         print("Sent →", customMsg)
     end
 end
 
--- Connect to chat
-player.Chatted:Connect(onChatted)
+-- Ensure player is available before connecting
+if not player then
+    -- In some contexts LocalPlayer isn't immediately available; try waiting briefly
+    local start = tick()
+    while not player and tick() - start < 5 do
+        player = players.LocalPlayer
+        task.wait(0.1)
+    end
+end
 
--- Main loop with while true and Heartbeat
-while true do
-    runService.Heartbeat:Wait()
+if player then
+    player.Chatted:Connect(onChatted)
+    players.PlayerRemoving:Connect(function(p)
+        if p == player then
+            isRunning = false
+        end
+    end)
+else
+    warn("LocalPlayer not found — chat commands won't be connected")
+end
 
-    if isRunning then
+-- Main loop: use Heartbeat with accumulator to respect sendInterval
+local accumulator = 0
+runService.Heartbeat:Connect(function(dt)
+    accumulator = accumulator + dt
+    if isRunning and accumulator >= sendInterval then
+        accumulator = accumulator - sendInterval
         local cmd = commands[currentIndex]
         if cmd then
-            sendToChat(cmd)
-            print("Sent →", cmd)
+            local sent = sendToChat(cmd)
+            if sent then
+                print("Sent →", cmd)
+            end
         end
 
         currentIndex = currentIndex + 1
@@ -166,6 +218,6 @@ while true do
             currentIndex = 1
         end
     end
-end
+end)
 
 print("Script initialized")
