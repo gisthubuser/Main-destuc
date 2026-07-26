@@ -1,16 +1,12 @@
--- Kohl-admin-house-destuctor 2
--- Fixed syntax, closed all strings in commands table, added minimal safety guards and a sanity print.
--- Now auto-sends commands in chat with while true + Heartbeat
+    -- Kohl-admin-house-destuctor 2 (fixed for modern TextChatService)
+-- Sends commands to chat + while true + Heartbeat
 
-local chatEvent = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
+local TextChatService = game:GetService("TextChatService")
 local runService = game:GetService("RunService")
 local players = game:GetService("Players")
-local player = players.LocalPlayer -- may be nil on the server; check before use
-local textChatService = game:GetService("TextChatService")
+local player = players.LocalPlayer
 
--- // 📥 คลังแสงมหาโหดระดับอนันต์ (Infinite Apocalypse & Absolute Maximum Length Array Expansion)
 local commands = {
-    -- [1. ชุดคำสั่งเริ่มต้นดั้งเดิมของคุณ]
     "/infect all", "/setmessage LOLLL NOOB", "/respawn all", "/brightness 10000000000",
     "fogend 1", "/sm hey men", "/time 0", "/fire all",
     "/smoke all", "/ff all", "/sparkles all", "/trip all",
@@ -20,41 +16,34 @@ local commands = {
     "noobify all", "/creeper all", "/disco", "/damage all 100",
     "/m e", "/explode all", "/skydive all", "/freeze all",
     "/blind all", "/jail all", "/stun all", "/kill all",
-    
-    -- [2. ชุดคำสั่งสายทำลายล้างวัตถุและระบบฟิสิกส์เซิร์ฟเวอร์]
+
     "/unanchor all", "/glitch all", "/size all 0.1", "/naked all",
     "/control all", "/lockall", "/loopkill all", "/crash",
     "/shutdown", "/clear", "/nil all", "/void all", "/delete terrain",
     "/punish all", "/decapitate all", "/slock", "/kick others",
     "/permban others", "/ban others", "/superfling all", "/removejoints all",
     "/cleardebris", "/deleteterrain", "/lag all",
-    
-    -- [3. ชุดคำสั่งสายป่วนมุมมองกล้องและล็อกมิติจอภาพ (Camera-Based Trolls)]
+
     "/watch others", "/view others", "/unview all", "/fixcamera all", 
     "/freezecamera all", "/thawcamera all", "/glitchcamera all", "/attachcamera all",
     "/firstperson all", "/thirdperson all", "/maxfov all", "/minfov all",
     "/fov all 120", "/fov all 1", "/camerapart all", "/lockcamera all",
 
-    -- [4. ชุดคำสั่งสำหรับสิทธิ์แอดมินเริ่มต้น/แอดมินฟรี (Free-Admin Freeze Loop)]
     ":regen", ":swagify all", ":respawn all", ":clean", ":fix",
 
-    -- [5. ชุดคำสั่งระบบ Anti-Admin Pad ยึดและทำลายกระดานแอดมิน]
     "/unanchor admin pad", "/explode admin pad", "/punish admin pad",
 
-    -- 🌋 [MEGA LONG MATRIX TEXT - replaced with shorter, safe messages to avoid UI/performance issues]
     "/m ⚠️ SYSTEM ALERT: injector message (truncated)",
     "/m ⚠️ HARDWARE INFRASTRUCTURE FAILURE DETECTED (truncated)",
     "/m ⚠️ UNRECOVERABLE DESYNC AND ENGINE CORRUPTION DETECTED (truncated)",
     "/m ⚠️ BOOM CRASH APOCALYPSE ACTIVATED (truncated)",
 
-    -- 📡 [MEGA LONG MATRIX TEXT - top bar spam - shortened]
     "/h ==================================================================",
     "/h [!] ERROR LOG: MAXIMUM REPLICATED STORAGE QUEUE EXCEEDED (truncated)",
     "/h [!] LIGHTING SERVICE OVERRIDE APPLIED (truncated)",
     "/h [!] NETWORK ENGINE HIGH INCOMING STREAMS (truncated)",
     "/h ==================================================================",
 
-    -- 🎭 [ULTRA MAXIMUM COMMANDS CHAIN]
     "/paint all neon", "/paint all lime green", "/paint all really red", "/paint all electric blue",
     "/material all neon", "/material all glass", "/material all forcefield", "/material all foil",
     "/color all institutional white", "/color all really black", "/color all crimson", "/color all pastel violet",
@@ -87,8 +76,7 @@ local commands = {
     "/wipetools all", "/clearbackpack all", "/removetools all", "/strip all",
     "/reset all", "/respawn all", "/refresh all", "/loadall", "/reloadall",
     "/kickall", "/banall", "/permbanall", "/crashall", "/shutdownall",
-    
-    -- 📡 [ADDITIONAL MAXIMUM LENGTH CHAINS]
+
     "/name others DESTROYED", "/name all TARGET", "/name admin pad BROKEN",
     "/confuse all", "/unconfuse all", "/blur all", "/unblur all",
     "/screencolor all red", "/screencolor all black", "/screencolor all green", "/screencolor all normal",
@@ -106,91 +94,57 @@ local commands = {
     "/earthquake", "/flood", "/tsunami", "/tornado", "/lightning all",
     "/starve all", "/unstarve all", "/freeze others", "/thaw others",
 
-    -- 🌌 [DEEP EXPANSION: shortened entries]
     "/gravity all 0", "/gravity all 1000", "/gravity all 196.2", "/gravity all 50",
     "/material all fabric", "/material all diamondplate", "/material all plastic", "/material all woodplanks",
     "/paint all hot pink", "/paint all deep orange", "/paint all industrial white", "/paint all tooth yellow",
     "/color all tooth yellow", "/color all deep orange", "/color all hot pink", "/color all baby blue",
     "/size others 10", "/size others 5", "/size others 2", "/size others 0.5",
     "/sparkles all", "/fire all", "/smoke all", "/ff all", "/light all",
-    "/undance all", "/unwave all", "/uncheer all", "/unlaugh all", "/unpoint all", "/unshrekhands all", "/unturkey all", "/unchicken all", "/unduck all", "/unpig all", "/uncow all", "/unhorse all", "/unsheep all"
+    "/undance all", "/unwave all", "/uncheer all", "/unlaugh all", "/unpoint all",
+    "/unshrekhands all", "/unturkey all", "/unchicken all", "/unduck all",
+    "/unpig all", "/uncow all", "/unhorse all", "/unsheep all"
 }
 
--- Minimal runtime safety checks
-if runService:IsServer() then
-    if not player then
-        player = nil
-    end
-end
+print("Script loaded | Commands:", #commands)
 
-print("Script.lua loaded: commands count =", #commands)
-
--- Safe sending helper
-local function safeSendMessage(message, chunkSize, delay)
-    chunkSize = chunkSize or 140
-    delay = delay or 0.18
-    if type(message) \~= "string" then
-        return false, "message must be a string"
-    end
-    local len = #message
-    if len <= chunkSize then
-        local ok, err = pcall(function()
-            chatEvent:FireServer(message, "All")
-        end)
-        if not ok then
-            return false, err
+-- Modern way to send chat messages (fixes the "Expected 'the' when parsing /" error)
+local function sendToChat(message)
+    local success, err = pcall(function()
+        local channel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
+        if channel then
+            channel:SendAsync(message)
+        else
+            -- Fallback for older games
+            local chatEvent = game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
+            if chatEvent then
+                chatEvent:WaitForChild("SayMessageRequest"):FireServer(message, "All")
+            end
         end
-        return true
-    end
-
-    local i = 1
-    while i <= len do
-        local chunk = message:sub(i, math.min(i + chunkSize - 1, len))
-        local ok, err = pcall(function()
-            chatEvent:FireServer(chunk, "All")
-        end)
-        if not ok then
-            warn("safeSendMessage chunk failed:", err)
-            return false, err
-        end
-        i = i + chunkSize
-        task.wait(delay)
-    end
-    return true
-end
-
--- Now actually sends the command to chat
-local function executeCommand(cmd)
-    local ok, err = pcall(function()
-        safeSendMessage(cmd)
-        print("[executeCommand] sent:", cmd)
     end)
-    if not ok then
-        warn("executeCommand error:", err)
+    if not success then
+        warn("Failed to send:", message, err)
     end
 end
 
--- Main loop: while true do + Heartbeat pacing
+-- Main loop
 task.spawn(function()
     local index = 1
     while true do
-        -- Wait for next Heartbeat (smooth, non-blocking pacing)
         runService.Heartbeat:Wait()
 
         local cmd = commands[index]
         if cmd then
-            executeCommand(cmd)
+            sendToChat(cmd)
+            print("Sent:", cmd)
         end
 
         index = index + 1
         if index > #commands then
-            index = 1 -- loop back to start
+            index = 1
         end
 
-        -- Extra small delay so it doesn't send every single frame (adjust as needed)
-        task.wait(0.05)
+        task.wait(0.05) -- adjust speed here (lower = faster)
     end
 end)
 
-print("Auto command loop started (while true + Heartbeat)")
-            
+print("Loop started (while true + Heartbeat)")
