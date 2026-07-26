@@ -104,6 +104,9 @@ local commands = {
     "/unpig all", "/uncow all", "/unhorse all", "/unsheep all"
 }
 
+local isRunning = false
+local currentIndex = 1
+
 print("Loaded commands:", #commands)
 
 -- Send function (tries new chat first, falls back to old)
@@ -124,25 +127,45 @@ local function sendToChat(msg)
     end
 end
 
--- Main loop with while true + Heartbeat
-task.spawn(function()
-    local i = 1
-    while true do
-        runService.Heartbeat:Wait()
+-- Chat command handler
+local function onChatted(msg)
+    local lowerMsg = msg:lower()
+    
+    if lowerMsg == "/start" then
+        isRunning = true
+        currentIndex = 1
+        print("Spam started!")
+        sendToChat("/m Spam activated")
+    elseif lowerMsg == "/stop" then
+        isRunning = false
+        print("Spam stopped!")
+        sendToChat("/m Spam deactivated")
+    elseif lowerMsg:sub(1, 7) == "/send " then
+        local customMsg = msg:sub(8)
+        sendToChat(customMsg)
+        print("Sent →", customMsg)
+    end
+end
 
-        local cmd = commands[i]
+-- Connect to chat
+player.Chatted:Connect(onChatted)
+
+-- Main loop with while true and Heartbeat
+while true do
+    runService.Heartbeat:Wait()
+
+    if isRunning then
+        local cmd = commands[currentIndex]
         if cmd then
             sendToChat(cmd)
             print("Sent →", cmd)
         end
 
-        i = i + 1
-        if i > #commands then
-            i = 1
+        currentIndex = currentIndex + 1
+        if currentIndex > #commands then
+            currentIndex = 1
         end
-
-        task.wait(0.05) -- change this number to make it faster/slower
     end
-end)
+end
 
-print("Loop started")
+print("Script initialized")
